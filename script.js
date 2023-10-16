@@ -18,17 +18,17 @@ const taskCompleteCheckbox = document.querySelector("#toggle-task-complete");
 const taskEditBtn = document.querySelector("#edit-task");
 const taskDeleteBtn = document.querySelector("#delete-task");
 
-// Tasks as array of objects, stored in local storage
+
 let storedTasks = localStorage.getItem("storedTasks")
   ? JSON.parse(localStorage.getItem("storedTasks"))
   : [];
 
-// Event Listeners
+
 form.addEventListener("submit", addTask);
 markAllTasksAsCompletedBtn.addEventListener("click", markAllTasksAsCompleted);
 deleteAllCompletedTasksBtn.addEventListener("click", deleteAllCompletedTasks);
 
-// Via event delegation because the task buttons are dynamically created
+
 tasks.addEventListener("click", function (e) {
   if (e.target.matches("#toggle-task-complete")) {
     toggleTaskComplete(e);
@@ -41,19 +41,19 @@ tasks.addEventListener("click", function (e) {
   }
 });
 
-// hide the "Mark All Tasks As Completed" and "Delete All Completed Tasks" buttons if tasks < 2
+
 if (storedTasks.length < 2) {
   markAllTasksAsCompletedBtn.style.display = "none";
   deleteAllCompletedTasksBtn.style.display = "none";
 }
 
-// disable "Delete All Completed Tasks" button no tasks are marked completed
+
 if (storedTasks.every((task) => task.completed === false)) {
   deleteAllCompletedTasksBtn.disabled = true;
   deleteAllCompletedTasksBtn.classList.add("disabled");
 }
 
-// disable the "Mark All Tasks As Completed" button if all tasks are already marked as completed
+
 if (storedTasks.every((task) => task.completed === true)) {
   markAllTasksAsCompletedBtn.disabled = true;
   markAllTasksAsCompletedBtn.classList.add("disabled");
@@ -77,12 +77,11 @@ function addTask(e) {
   localStorage.setItem("storedTasks", JSON.stringify(storedTasks));
   showTasks();
 
-  // clear input fields
+
   titleInput.value = "";
   descriptionInput.value = "";
   dateInput.value = "";
 
-  // show the "Mark All Tasks As Completed" and "Delete All Completed Tasks" buttons if tasks > 1
   if (storedTasks.length > 1) {
     markAllTasksAsCompletedBtn.style.display = "block";
     markAllTasksAsCompletedBtn.classList.remove("disabled");
@@ -90,19 +89,19 @@ function addTask(e) {
   }
 }
 
-// Show Tasks, filtered by uncompleted and completed
+
 function showTasks() {
   tasks.innerHTML = "";
-  // Filter uncompleted tasks
+
   const uncompletedTasks = storedTasks.filter((task) => !task.completed);
-  // Filter completed tasks
+
   const completedTasks = storedTasks.filter((task) => task.completed);
 
-  // If there are uncompleted tasks
+
   if (uncompletedTasks.length > 0) {
-    // Create a heading for uncompleted tasks
+    
     tasks.innerHTML += `<h2>Uncompleted Tasks</h2>`;
-    // Loop through uncompleted tasks and display them
+    
     uncompletedTasks.forEach((task) => {
       tasks.innerHTML += `
           <div class="task" id="${task.id}">
@@ -196,7 +195,7 @@ function showTasks() {
           <div class="task-body">
             <p>${task.description}</p>
             <p>Due Date: ${
-              // Format: Sun Jan 22 2023 21:28:59 PM
+              
               dueDate.toLocaleString("EAT", {
                 weekday: "short",
                 year: "numeric",
@@ -211,7 +210,7 @@ function showTasks() {
           <div class="task-footer">
             <div class="task-time">
               <p>Completed Date: ${
-                // Format: Sun Jan 22 2023 21:28:59 PM
+               
                 completedDate.toLocaleString("EAT", {
                   weekday: "short",
                   year: "numeric",
@@ -238,7 +237,7 @@ function showTasks() {
     });
   }
 
-  // If there are no tasks
+  
   if (!completedTasks.length && !uncompletedTasks.length) {
     tasks.innerHTML += `
     <div class="no-tasks">
@@ -248,7 +247,7 @@ function showTasks() {
   }
 }
 
-// Toggle Task Completed (Mark or Unmark as Completed)
+
 function toggleTaskComplete(e) {
   const task = e.target.closest(".task");
   const taskId = task.id;
@@ -261,16 +260,14 @@ function toggleTaskComplete(e) {
   }
   localStorage.setItem("storedTasks", JSON.stringify(storedTasks));
 
-  // update the "Mark All Tasks As Completed" button appropriately
-  // i.e if all tasks are completed, disable the button else enable it
+
   if (storedTasks.every((task) => task.completed === true)) {
     markAllTasksAsCompletedBtn.classList.add("disabled");
   } else {
     markAllTasksAsCompletedBtn.classList.remove("disabled");
   }
 
-  // update the "Delete All Completed Tasks" button appropriately
-  // i.e if all tasks are completed, enable the button else disable it
+
   if (storedTasks.every((task) => task.completed === false)) {
     deleteAllCompletedTasksBtn.classList.add("disabled");
   } else {
@@ -280,7 +277,7 @@ function toggleTaskComplete(e) {
   showTasks();
 }
 
-// Edit Task (Update Task)
+
 function editTask(e) {
   const task = e.target.closest(".task");
   const taskId = task.id;
@@ -293,7 +290,7 @@ function editTask(e) {
   showTasks();
 }
 
-// Delete Task
+
 function deleteTask(e) {
   const task = e.target.closest(".task");
   const taskId = task.id;
@@ -302,7 +299,7 @@ function deleteTask(e) {
   showTasks();
 }
 
-// Mark All Tasks as Completed
+
 function markAllTasksAsCompleted() {
   storedTasks = storedTasks.map((task) => {
     task.completed = true;
@@ -316,18 +313,18 @@ function markAllTasksAsCompleted() {
   taskEditBtn.classList.add("disabled");
 }
 
-// Delete All Completed Tasks
+
 function deleteAllCompletedTasks() {
   storedTasks = storedTasks.filter((task) => !task.completed);
   localStorage.setItem("storedTasks", JSON.stringify(storedTasks));
   showTasks();
 
-  // hide the "Mark All Tasks as Completed" and "Delete All Completed Tasks" buttons
+  
   markAllTasksAsCompletedBtn.style.display = "none";
   deleteAllCompletedTasksBtn.style.display = "none";
 }
 
-// if no Completed /uncompleted show a message
+
 if (storedTasks.length === 0) {
   tasks.innerHTML = "";
   tasks.innerHTML = `
